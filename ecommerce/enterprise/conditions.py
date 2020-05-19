@@ -16,6 +16,7 @@ from slumber.exceptions import SlumberHttpBaseException
 from ecommerce.enterprise.api import catalog_contains_course_runs
 from ecommerce.enterprise.utils import get_enterprise_id_for_user, get_or_create_enterprise_customer_user
 from ecommerce.extensions.basket.utils import ENTERPRISE_CATALOG_ATTRIBUTE_TYPE
+from ecommerce.extensions.fulfillment.status import ORDER
 from ecommerce.extensions.offer.constants import OFFER_ASSIGNMENT_REVOKED, OFFER_REDEEMED
 from ecommerce.extensions.offer.mixins import ConditionWithoutRangeMixin, SingleItemConsumptionConditionMixin
 from ecommerce.extensions.offer.models import OFFER_PRIORITY_ENTERPRISE
@@ -42,11 +43,8 @@ def is_offer_max_user_discount_available(basket, offer):
     discount_value = _get_course_discount_value(basket, offer)
     # check if offer has discount available for user
     sum_user_discounts_for_this_offer = OrderDiscount.objects.filter(
-        offer_id=offer.id).select_related('order').filter(
-            order__user_id=basket.owner.id, order__status='Complete').aggregate(Sum('amount'))['amount__sum']
-    if sum_user_discounts_for_this_offer is None:
-        sum_user_discounts_for_this_offer = Decimal(0.00)
-
+        offer_id=offer.id, order__user_id=basket.owner.id, order__status=ORDER.COMPLETE
+    ).aggregate(Sum('amount'))['amount__sum'] or Decimal(0.00)
     new_total_discount = discount_value + sum_user_discounts_for_this_offer
     if new_total_discount <= offer.max_user_discount:
         return True

@@ -18,6 +18,7 @@ from ecommerce.enterprise.tests.mixins import EnterpriseServiceMockMixin
 from ecommerce.extensions.api.serializers import CouponCodeAssignmentSerializer
 from ecommerce.extensions.basket.utils import basket_add_enterprise_catalog_attribute
 from ecommerce.extensions.catalogue.tests.mixins import DiscoveryTestMixin
+from ecommerce.extensions.fulfillment.status import ORDER
 from ecommerce.extensions.offer.constants import (
     OFFER_ASSIGNMENT_EMAIL_PENDING,
     OFFER_ASSIGNMENT_REVOKED,
@@ -419,7 +420,7 @@ class EnterpriseCustomerConditionTests(EnterpriseServiceMockMixin, DiscoveryTest
             max_user_discount=100
         )
         for _ in range(num_prev_orders):
-            order = OrderFactory(user=self.user, status='Complete')
+            order = OrderFactory(user=self.user, status=ORDER.COMPLETE)
             OrderDiscountFactory(order=order, offer_id=offer.id, amount=10)
         basket = BasketFactory(site=self.site, owner=self.user)
         basket.add_product(self.course_run.seat_products[0])
@@ -443,7 +444,7 @@ class EnterpriseCustomerConditionTests(EnterpriseServiceMockMixin, DiscoveryTest
             max_user_discount=150
         )
         for _ in range(5):
-            order = OrderFactory(user=self.user, status='Complete')
+            order = OrderFactory(user=self.user, status=ORDER.COMPLETE)
             OrderDiscountFactory(order=order, offer_id=offer.id, amount=10)
         basket = BasketFactory(site=self.site, owner=self.user)
         basket.add_product(self.course_run.seat_products[0])

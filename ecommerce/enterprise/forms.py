@@ -13,6 +13,7 @@ from oscar.core.loading import get_model
 from ecommerce.enterprise.benefits import BENEFIT_MAP, BENEFIT_TYPE_CHOICES
 from ecommerce.enterprise.conditions import EnterpriseCustomerCondition
 from ecommerce.enterprise.utils import get_enterprise_customer
+from ecommerce.extensions.fulfillment.status import ORDER
 from ecommerce.extensions.offer.models import OFFER_PRIORITY_ENTERPRISE
 from ecommerce.extensions.payment.models import EnterpriseContractMetadata
 from ecommerce.programs.custom import class_path, create_condition
@@ -158,7 +159,7 @@ class EnterpriseOfferForm(forms.ModelForm):
             new_max_user_applications = self.cleaned_data.get('max_user_applications') or 0
             max_order_count_any_user = OrderDiscount.objects.filter(
                 offer_id=self.instance.id).select_related('order').filter(
-                    order__status='Complete').values('order__user_id').order_by(
+                    order__status=ORDER.COMPLETE).values('order__user_id').order_by(
                         'order__user_id').annotate(count=Count('order__id')).aggregate(Max('count'))['count__max'] or 0
             if new_max_user_applications < max_order_count_any_user:
                 self.add_error(
@@ -181,7 +182,7 @@ class EnterpriseOfferForm(forms.ModelForm):
             new_max_user_discount = max_user_discount or 0
             max_discount_used_any_user = OrderDiscount.objects.filter(
                 offer_id=self.instance.id).select_related('order').filter(
-                    order__status='Complete').values('order__user_id').order_by(
+                    order__status=ORDER.COMPLETE).values('order__user_id').order_by(
                         'order__user_id').annotate(user_discount_sum=Sum('amount')).aggregate(
                             Max('user_discount_sum'))['user_discount_sum__max'] or 0
             if new_max_user_discount < max_discount_used_any_user:

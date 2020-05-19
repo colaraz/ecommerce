@@ -11,6 +11,7 @@ from oscar.test.factories import OrderDiscountFactory, OrderFactory
 from ecommerce.enterprise.benefits import BENEFIT_MAP
 from ecommerce.enterprise.forms import EnterpriseOfferForm
 from ecommerce.enterprise.tests.mixins import EnterpriseServiceMockMixin
+from ecommerce.extensions.fulfillment.status import ORDER
 from ecommerce.extensions.offer.models import OFFER_PRIORITY_ENTERPRISE
 from ecommerce.extensions.payment.models import EnterpriseContractMetadata
 from ecommerce.extensions.test import factories
@@ -528,7 +529,7 @@ class EnterpriseOfferFormTests(EnterpriseServiceMockMixin, TestCase):
         # create an enterprise offer that can be used upto 5 times and has already been used 3 times
         offer = factories.EnterpriseOfferFactory(max_user_applications=5, max_user_discount=500)
         for _ in range(num_applications):
-            order = OrderFactory(user=self.user, status='Complete')
+            order = OrderFactory(user=self.user, status=ORDER.COMPLETE)
             OrderDiscountFactory(order=order, offer_id=offer.id, amount=10)
         # now try to update the offer with max_user_applications set to 2
         # which is less than the number of times this offer has already been used
@@ -559,7 +560,7 @@ class EnterpriseOfferFormTests(EnterpriseServiceMockMixin, TestCase):
         # create an enterprise offer that can provide max $500 discount and has already consumed $400
         offer = factories.EnterpriseOfferFactory(max_user_applications=50, max_user_discount=500)
         for _ in range(4):
-            order = OrderFactory(user=self.user, status='Complete')
+            order = OrderFactory(user=self.user, status=ORDER.COMPLETE)
             OrderDiscountFactory(order=order, offer_id=offer.id, amount=100)
         # now try to update the offer with max_discount set to 300 which is less than the already consumed discount
         data = self.generate_data(max_user_applications=50, max_user_discount=300)
