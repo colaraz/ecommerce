@@ -72,6 +72,13 @@ DB_OVERRIDES = dict(
 for override, value in DB_OVERRIDES.iteritems():
     DATABASES['default'][override] = value
 
+# Paypal configurations
+paypal_dict = {
+    'mode': config_from_yaml.get('PAYPAL_MODE', None),
+    'client_id': config_from_yaml.get('PAYPAL_CLIENT_ID', None),
+    'client_secret': config_from_yaml.get('PAYPAL_SECRET', None)
+}
+PAYMENT_PROCESSOR_CONFIG['edx'].update({'paypal': paypal_dict})
 
 # PAYMENT PROCESSOR OVERRIDES
 for __, configs in PAYMENT_PROCESSOR_CONFIG.iteritems():
