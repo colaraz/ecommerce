@@ -5,12 +5,13 @@ define([
     function(_,
              CourseSeat) {
         'use strict';
-
         return CourseSeat.extend({
             defaults: _.extend({}, CourseSeat.prototype.defaults,
                 {
                     certificate_type: 'professional',
-                    id_verification_required: false,
+                    // [COLARAZ_CUSTOM]
+                    // Set the default value of is verification required radio button.
+                    id_verification_required: true,
                     price: 1000
                 }
             )
