@@ -236,8 +236,12 @@ define([
             renderVerificationDeadline: function() {
                 var $verificationDeadline = this.$el.find('.verification-deadline');
 
-                // TODO Make this display a bit smoother with a slide.
-                $verificationDeadline.toggleClass('hidden', !this.model.isIdVerified());
+
+                // [COLARAZ_CUSTOM]
+                // No need to show verification deadline input box as we have
+                // eradicated manual ID verification process
+                $verificationDeadline.toggleClass('hidden', true);
+                this.$el.find('#verificationDeadline').val('2050-12-31T00:00:00');
 
                 return this;
             },
