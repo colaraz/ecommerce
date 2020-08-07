@@ -128,8 +128,12 @@ class Course(models.Model):
         if certificate_type != '':
             name += u' with {} certificate'.format(certificate_type)
 
-            if id_verification_required:
-                name += u' (and ID verification)'
+            # [COLARAZ_CUSTOM]
+            # No need to show any message related to ID verification
+            # as we have already eradicated manual id verfication step
+            #
+            # if id_verification_required:
+            #     name += u' (and ID verification)'
 
         return name
 
