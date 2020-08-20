@@ -17,9 +17,6 @@ PROTOCOL = 'https'
 COMPRESS_ENABLED = True
 COMPRESS_OFFLINE = True
 
-# Email configuration
-EMAIL_BACKEND = 'django_ses.SESBackend'
-
 # Minify CSS
 COMPRESS_CSS_FILTERS += [
     'compressor.filters.cssmin.CSSMinFilter',
@@ -72,6 +69,13 @@ DB_OVERRIDES = dict(
 for override, value in DB_OVERRIDES.iteritems():
     DATABASES['default'][override] = value
 
+# Email configuration
+EMAIL_BACKEND = config_from_yaml.get('ECOMMERCE_EMAIL_BACKEND')
+EMAIL_HOST = config_from_yaml.get('ECOMMERCE_EMAIL_HOST')
+EMAIL_PORT = config_from_yaml.get('ECOMMERCE_EMAIL_PORT')
+EMAIL_USE_TLS = config_from_yaml.get('ECOMMERCE_EMAIL_USE_TLS')
+EMAIL_HOST_USER = config_from_yaml.get('ECOMMERCE_EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config_from_yaml.get('ECOMMERCE_EMAIL_HOST_PASSWORD')
 
 # PAYMENT PROCESSOR OVERRIDES
 for __, configs in PAYMENT_PROCESSOR_CONFIG.iteritems():
